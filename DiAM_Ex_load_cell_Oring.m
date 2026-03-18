@@ -9,9 +9,9 @@ E = 190e3; % MPa
 nu= 0.29;  % -
 Sy= 600;   % MPa
 
-Dm= 20  % mm 
-h = 2    % mm
-b = 6    % mm
+Dm= 20;   % mm 
+h = 2;    % mm
+b = 6;    % mm
 
 eps_sens  = 1e-6; % mm/mm
 
@@ -38,10 +38,8 @@ F_sens = 0; %% pendent de programar
 disp(['Disseny']);
 disp(['  Dm = ',num2str(Dm),' mm']);
 disp(['  h  = ',num2str(h),' mm']);
-disp(['  b  = ',num2str(b),' mm']);
-disp([' ']);
+disp(['  b  = ',num2str(b),' mm',newline]);
 disp(['Factor de seguretat']);
-disp(['  SF = ',num2str(min(SFe)),' ']);
-disp([' ']);
+disp(['  SF = ',num2str(min(SFe)),newline]);
 disp(['Valor de la sensibilitat']);
 disp(['  Sensibilitat_F = ',num2str(F_sens),' N']);

@@ -18,8 +18,8 @@ b = 6;    % mm
 eps_sens = 1e-6; % mm/mm, sensibilitat de l'equip (+-)
 SF_d = 3;         % -    , SF estàtic desitjat
 
-disp([sprintf('\n'),'Apartat 3) determinació de la geometria ', ...
-    'amb un SF dessitjat de ',num2str(round(SF_d,2)),sprintf('\n') ]);
+disp([newline,'Apartat 3) determinació de la geometria ', ...
+    'amb un SF dessitjat de ',num2str(round(SF_d,2)),newline ]);
 
 %% METODE de la biseccio per obtenir mides òptimes
 SF_e = 0; cont = 0; SF_eps = 0.05;
@@ -43,10 +43,10 @@ end
 inc=0.01;h=ceil(h/inc)*inc;Dm=h*10;b=h*3;
 [SF_e,sig_o,sig_i] = SF_trial(Dm,h,b,P,Sy);
 
-disp([sprintf('\n'),'Resultat a la iteració: ',num2str(cont),'.',...
-      sprintf('\n'),'Amb força ',num2str(P),...
+disp([newline,'Resultat a la iteració: ',num2str(cont),'.',...
+      newline,'Amb força ',num2str(P),...
       'N, el gruix nominal és de h=',num2str(ceil(h/inc)*inc),'mm.',...
-      sprintf('\n'),'El SF obtingut és ',num2str(round(SF_e,2)),sprintf('\n')]);
+      newline,'El SF obtingut és ',num2str(round(SF_e,2)),newline]);
 
 %% Valoració de la sensibilitat del disseny òptim
 eps_i = [1/E -nu/E -nu/E;-nu/E 1/E -nu/E;-nu/E -nu/E 1/E]*[sig_i 0 0]';
@@ -58,18 +58,16 @@ F_sens = eps_sens/eps_wheastone*P;
 disp(['Mides del disseny final']);
 disp(['  Dm = ',num2str(Dm),' mm']);
 disp(['  h  = ',num2str(h),' mm']);
-disp(['  b  = ',num2str(b),' mm']);
-disp([' ']);
+disp(['  b  = ',num2str(b),' mm',newline]);
 disp(['Factor de seguretat']);
-disp(['  SF = ',num2str(min(SF_e)),' ']);
-disp([' ']);
+disp(['  SF = ',num2str(min(SF_e)),newline]);
 disp(['Valor de la sensibilitat']);
 disp(['  Sensibilitat_F = ',num2str(F_sens),' N']);
 disp(['  Resolució      = ',num2str(round(P/F_sens)),' mesures']);
 
 %% Estat de tensió i deformació en els punts de col·locació galgues
 
-disp([sprintf('\n'),'Apartat 5) Cercles de Mohr',sprintf('\n') ]);
+disp([newline,'Apartat 5) Cercles de Mohr',newline ]);
 
 cercle_Mohr(sig_i,0,0,'Estat de tensions galga interior','sigma',[0, 0.4470, 0.7410])
 cercle_Mohr(eps_i(1),eps_i(2),eps_i(3),'Estat de deformacions galga interior','epsilon',[0, 0.4470, 0.7410])
@@ -160,8 +158,8 @@ if sigma_I == sigma_II
 else
     signe = 0;
 end
-text(sigma_I+gap*0.3,   +gap,pI,    'FontSize',24,'interpreter','latex')
-text(sigma_II+gap*0.3 - signe*gap*3.3,  +gap,pII,   'FontSize',24,'interpreter','latex')
-text(sigma_III-gap*3.2, +gap,pIII,  'FontSize',24,'interpreter','latex')
-saveas(gcf,['./figures/',title_,'.png'])
+text(sigma_I+gap*0.3,   +gap,pI,    'FontSize',24,'interpreter','latex');
+text(sigma_II+gap*0.3 - signe*gap*3.3,  +gap,pII,   'FontSize',24,'interpreter','latex');
+text(sigma_III-gap*3.2, +gap,pIII,  'FontSize',24,'interpreter','latex');
+saveas(gcf,['../figures/',title_,'.png'])
 end

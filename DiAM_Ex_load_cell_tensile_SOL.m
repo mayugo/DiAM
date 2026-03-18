@@ -1,153 +1,83 @@
-%%% Disseny de una celÂ·la cÃ rrega a tracciÃ³
+%%% Disseny de una cel·la càrrega a tracció
 %%% J.A. Mayugo 8/01/2022
 clear, close all
 
 %% Dades problema
-F = 10e3;   % N, forÃ§a nominal / rang
+F = 10e3;           % N, força nominal / rang
 
-E = 190e3; % MPa, elasticitat acer inoxidable
-nu= 0.29;  % -  , coeficient de Poisson
-Sy= 240;   % MPa, lÃ­mit elÃ stic
+E = 190e3;          % MPa, elasticitat acer inoxidable
+nu= 0.29;           % -  , coeficient de Poisson
+Sy= 240;            % MPa, límit elàstic
 
-%%
-% Geometria 'test'
-d = 100;   % mm
+Vo_Vi_sens = 2e-6;  % V/V, sensibilitat de l'equip (+-)
+K = 2            ;  % -  , factor de galga
 
-eps_sens = 4/2*2e-6; % mm/mm, sensibilitat de l'equip (+-)
-SF_d = 3;         % -    , SF estÃ tic mÃ­nim
+SF_d = 3;           % -    , SF estàtic mínim
+sens_F_d = 50;      % N, sensibilitat dessitjada
 
-sens_F_d = 50; % N, sensibilitat dessitjada
+d = 100;            % mm, diàmetre test inicial
 
-disp([sprintf('\n'),'DeterminaciÃ³ de la geometria ', ...
-    'amb una sensibilitat dessitjada de ',num2str(round(sens_F_d,1)),sprintf('\n') ]);
+disp([newline,'Determinació de la geometria ', ...
+    'amb una sensibilitat dessitjada de ',num2str(round(sens_F_d,1)),newline ]);
 
-%% METODE de la biseccio per obtenir mides Ã²ptimes
-sens_F_e = sens_F_d*2; cont = 0; sens_F_eps = 0.1;
-d_min = d/100; d_max = d*10; % mm,  diÃ metre inicial mÃ­nim i mÃ xim
-% GeneraciÃ³ del bucle 'while' per a calcular les dimensions mÃ ximes per
+%% MÈTODE de la biseccio per obtenir mides òptimes
+sens_F_e = sens_F_d*2; cont = 0; sens_F_eps = sens_F_d/1000;
+d_min = d/100; d_max = d*10; % mm,  diàmetre inicial mínim i màxim
+% Generació del bucle 'while' per a calcular les dimensions màximes per
 % aconseguir la sensibilitat dessitjada
 while (abs(sens_F_d-sens_F_e) > sens_F_eps)        % repeteix mentre no troba solucio
     cont = cont +1;
     d  = (d_min+d_max)/2; % punt mig
-    [sens_F_e,SF_e] = sens_F_trial(d,F,E,nu,Sy,eps_sens);
+    [sens_F_e,SF_e,factible] = sens_F_trial(d,F,E,nu,Sy,SF_d,Vo_Vi_sens,K);
     if sens_F_d >= sens_F_e
         d_min=d;
     else
         d_max=d;
     end
-    disp (['# iter.: ',num2str(cont),' el diÃ metre Ã©s de ',num2str(d)...
-        'mm. La sensibilitat obtinguda Ã©s ',num2str(round(sens_F_e,2))...
-        '.El SF obtingut Ã©s ',num2str(round(SF_e,2))]);
+    disp (['# iter.: ',num2str(cont),' el diàmetre és de ',num2str(d)...
+        'mm. La sensibilitat obtinguda és ',num2str(round(sens_F_e,1))...
+        '.El SF obtingut és ',num2str(round(SF_e,2)),' (',factible,')']);
 end
 %% Resultat arrodonit a geometria de 0.1 mm
 inc=0.1;d=floor(d/inc)*inc;
-    [sens_F_e,SF_e] = sens_F_trial(d,F,E,nu,Sy,eps_sens);
+[sens_F_e,SF_e,factible] = sens_F_trial(d,F,E,nu,Sy,SF_d,Vo_Vi_sens,K);
 
-disp([sprintf('\n'),'Resultat a la iteraciÃ³: ',num2str(cont),'.',...
-      sprintf('\n'),'Amb forÃ§a ',num2str(F),...
-      'N, el nominal nominal Ã©s de d=',num2str(ceil(d/inc)*inc),'mm.',...
-      sprintf('\n'),'El SF obtingut Ã©s ',num2str(round(SF_e,2)),sprintf('\n')]);
-
-
+disp([newline,'Resultat a la iteració: ',num2str(cont),'.',...
+    newline,'Amb força ',num2str(F),...
+    'N, el nominal nominal és de d=',num2str(ceil(d/inc)*inc),'mm.',...
+    newline,'El SF obtingut és ',num2str(round(SF_e,2)),...
+    ' (',factible,')',newline]);
 
 %% Resultats
 disp(['Mida del disseny final']);
-disp(['  d = ',num2str(d),' mm']);
-disp([' ']);
+disp(['  d = ',num2str(d),' mm',newline]);
 disp(['Factor de seguretat']);
-disp(['  SF = ',num2str(min(SF_e)),' ']);
-disp([' ']);
-disp(['Valor de la sensibilitat']);
-disp(['  Sensibilitat_F = ',num2str(sens_F_e),' N']);
-disp(['  ResoluciÃ³      = ',num2str(round(F/sens_F_e)),' mesures']);
-
-% %% Estat de tensiÃ³ i deformaciÃ³ en els punts de colÂ·locaciÃ³ galgues
-% 
-% disp([sprintf('\n'),'Apartat 5) Cercles de Mohr',sprintf('\n') ]);
-% 
-% cercle_Mohr(sig_i,0,0,'Estat de tensions galga interior','sigma',[0, 0.4470, 0.7410])
-% cercle_Mohr(eps_i(1),eps_i(2),eps_i(3),'Estat de deformacions galga interior','epsilon',[0, 0.4470, 0.7410])
-% cercle_Mohr(0,0,sig_o,'Estat de tensions galga exterior','sigma',[0, 0.4470, 0.7410])
-% cercle_Mohr(eps_o(1),eps_o(2),eps_o(3),'Estat de deformacions galga exterior','epsilon',[0, 0.4470, 0.7410])
+disp(['  SF = ',num2str(min(SF_e)),' (',factible,')',newline]);
+disp(['Valor de la sensibilitat i resolució']);
+disp(['  Sensibilitat_F = ',num2str(round(sens_F_e,1)),' N']);
+disp(['  Resolució      = ',num2str(floor(F/sens_F_e)),' mesures']);
 
 %% Funcions emprades
 
-function [sens_F_e,SF_e] = sens_F_trial(d,F,E,nu,Sy,eps_sens)
+function [sens_F_e,SF_e,factible] = sens_F_trial(d,F,E,nu,Sy,SF_d,Vo_Vi_sens,K)
+% Càlcul de la sensibilitat del disseny
+% Input:    d (mm, diàmetre), F (N, força), E i nu (prop. elàstiques), 
+%           Sy i SF_d (prop. resistència), Vo_Vi_sens i K (extensiometria)
+% Output:   sens_F_e (N, sensibilitat del disseny)
+%           SF_e (factor seguretat)
+%           factible (etiqueta si el disseny és o no és factible 
 
-%% Analisi del disseny
-A=pi*d^2/4;     % Ã rea
-sig =  F/A;     % tensiÃ³
-SF_e = Sy/sig;  % factor de seguretat
-eps = [1/E -nu/E -nu/E;-nu/E 1/E -nu/E;-nu/E -nu/E 1/E]*[sig 0 0]'; 
-eps_wheastone = 2 * (eps(1));
+A=pi*d^2/4;                     % àrea
+sig =  F/A;                     % tensió longitudinal
+eps = [1/E -nu/E -nu/E;-nu/E 1/E -nu/E;-nu/E -nu/E 1/E]*[sig 0 0]';
+eps_wheastone = 2 * (eps(1));   % 2 galgues actives en direcció longitudinal
+eps_sens = 4/K*Vo_Vi_sens;      % mm/mm, sensibilitat de l'equip (+-)
 sens_F_e = eps_sens/eps_wheastone*F;
-end
 
-function sigma= cercle_Mohr(sigma_I,sigma_II,sigma_III,title_,labels,color_,xylim)
-%% Representa el cercle de Mohr d'un estat de tensiÃ³ plana
-% inputs:   sigma_I,    tensiÃ³ principal mÃ xima
-%           sigma_II,   tensiÃ³ principal mitja
-%           sigma_III,  tensiÃ³ principal mÃ­nima
-%           title_,     tÃ­tol del grÃ fic
-%           labels,     de tensions 'sigma' o de deformacions 'epsilon'
-%           color,      color
-%           xylim,      lÃ­mits del grÃ fic predefinits
-% output:   sigma,  tensions principals
-
-if isequal(labels, 'epsilon')
-    sigma = sort([sigma_I,sigma_II,sigma_III])*1e6;
-    pabs = '$\varepsilon \times 10^{-6}$';
-    pord = '$\gamma/2 \times 10^{-6}$';
-    pI =    '$\varepsilon_{I}$';
-    pII=    '$\varepsilon_{II}$';
-    pIII=   '$\varepsilon_{III}$';
+SF_e = Sy/sig;                  % factor de seguretat
+if SF_e >= SF_d
+    factible = 'disseny factible';
 else
-    sigma = sort([sigma_I,sigma_II,sigma_III]);
-    pabs = '$\sigma$ [MPa]';
-    pord = '$\tau$ [MPa]';
-    pI =    '$\sigma_{I}$';
-    pII=    '$\sigma_{II}$';
-    pIII=   '$\sigma_{III}$';  
+    factible = 'disseny NO factible';
 end
-sigma_I = sigma(3); sigma_II = sigma(2); sigma_III = sigma(1);
-
-%% Cercle de Mohr 
-f0=figure;hold on;grid on,axis equal;set(gca,'FontSize',18)
-theta = 0 : 0.05 : 2*pi;
-
-%cercle sigmaI-sigmaII-sigmaIII
-plot((sigma_I-sigma_II)/2 * cos(theta) + (sigma_I+sigma_II)/2,...
-    (sigma_I-sigma_II)/2 * sin(theta),'Color',color_,'LineWidth',1.6);
-plot((sigma_I-sigma_III)/2 * cos(theta) + (sigma_I+sigma_III)/2,...
-    (sigma_I-sigma_III)/2 * sin(theta),'Color',color_,'LineWidth',1.6);
-plot((sigma_II-sigma_III)/2 * cos(theta) + (sigma_II+sigma_III)/2,...
-    (sigma_II-sigma_III)/2 * sin(theta),'Color',color_,'LineWidth',1.6);
-
-if ~exist('xylim','var')
-     % third parameter does not exist, so default it to something
-      x_lim = xlim;y_lim = ylim;
-      xylim = [x_lim y_lim];
-else
-      xlim(xylim(1:2));ylim(xylim(3:4));
-end
-title(title_);
-% dibuixa eixos
-line([0 0], [xylim(3:4)],'Color','k','LineWidth',1.2);  %y-axis
-line([xylim(1:2)], [0 0],'Color','k','LineWidth',1.2);  %x-axis
-xlabel(pabs,'interpreter','latex');ylabel(pord,'interpreter','latex');  
-% dibuixa punts
-plot([sigma_I sigma_II sigma_III],[0 0 0],'o','MarkerEdgeColor',color_,...
-     'MarkerFaceColor',color_,'MarkerSize',12)
-% Escriu anotacions
-%y_lim = ylim;
-gap = xylim(4)/12;
-if sigma_I == sigma_II 
-    signe = 1;
-else
-    signe = 0;
-end
-text(sigma_I+gap*0.3,   +gap,pI,    'FontSize',24,'interpreter','latex')
-text(sigma_II+gap*0.3 - signe*gap*3.3,  +gap,pII,   'FontSize',24,'interpreter','latex')
-text(sigma_III-gap*3.2, +gap,pIII,  'FontSize',24,'interpreter','latex')
-saveas(gcf,['./figures/',title_,'.png'])
 end
