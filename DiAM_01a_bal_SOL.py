@@ -1,6 +1,5 @@
-# DiAM_bal_SOL.py
-# Traducci\u00f3 del script MATLAB a Python
-# DiAM, 2024 -> Python port
+# DiAM_01a_bal_SOL.py
+# DiAM, 2024 
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -65,17 +64,17 @@ def f_cercle_Mohr2D(sigma_A, sigma_B, desc_punt):
     plt.tight_layout()
     plt.show()
 
-# %% Dades del problema (units: mm i N)
+# %% Dades del problema 
 
-l1 = 105.0
-l2 = 65.0
-lA = 80.0
-lB = 45.0
+l1 = 105.0  # mm, longiut 1
+l2 = 65.0   # mm, longiut 2
+lA = 80.0   # mm, longitud A
+lB = 45.0   # mm, longitud B
 
-h = 22.0
-b = 10.0
+h = 22.0    # mm, gruix
+b = 10.0    # mm, amplada
 
-F1 = 1000.0
+F1 = 1000.0 # N, força F1
 
 # Sollicitacions a la seccio A-A
 N = 0.0
@@ -84,6 +83,12 @@ V_z = 0.0
 M_x = lA * F1        # N*mm
 M_y = 0.0
 T = lB * F1          # N*mm (torsor)
+
+print('\nSOL·LICITACIONS A LA SECCIÓ A-A no nul·les')
+print('------------------------------------------')
+print(f'Força tallant   V_y: {V_y} N.')
+print(f'Moment flector  M_x: {M_x} Nmm.')
+print(f'Moment torsió   T  : {T} Nmm.')
 
 # Propietats de la seccio A-A (rectangular, quantitats en mm)
 I = (1.0/12.0) * b * h**3  # mm^4
@@ -112,9 +117,11 @@ sig_M = 0.0
 tau_T = 1.0/eta2 * T / (b**2 * h)
 sig_A[2], sig_B[2], tau_max[2], sig_VM[2] = f_invariants2D(sig_M, 0.0, tau_T)
 
+print('\nTENSIONS PRINCIPALS EN ELS PUNTS:')
+print('---------------------------------')
 punts = ['a', 'b', 'c']
 for i in range(3):
-    print(f"Punt {punts[i]}: sigma_A = {sig_A[i]:.3f} MPa, sigma_B = {sig_B[i]:.3f} MPa, tau_max = {tau_max[i]:.3f} MPa, sigma_VM = {sig_VM[i]:.3f} MPa")
+    print(f"Punt {punts[i]}: sigma_A = {sig_A[i]:6.2f} MPa, sigma_B = {sig_B[i]:6.2f} MPa, tau_max = {tau_max[i]:6.2f} MPa, sigma_VM = {sig_VM[i]:6.2f} MPa")
 
 # Dibuixar cercles de Mohr
 for i in range(3):
