@@ -1,7 +1,7 @@
 function [ K_t] = K_t_rodo_flexio( D_d , r_d, i_flag )
 %Calcula la K_t d'un rodo sotmes a flexio amb un canvi de seccio de D a d:
 %   D = diametre gran; d= diametre petit; r=radi de l'entalla
-%   D_d = D/d ; r_d = r/D
+%   D_d = D/d ; r_d = r/d
 %   i_flag = 1, si es vol K_t per tensio normal
 %   i_flag <> 1, si es vol K_t per von Mises
 

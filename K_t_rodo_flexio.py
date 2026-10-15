@@ -1,7 +1,7 @@
 def K_t_rodo_flexio(D_d, r_d, i_flag=1):
 # Calcula K_t d'un rodó sotmès a flexió amb canvi de secció D -> d.
 # D = diàmetre gran; d= diàmetre petit; r=radi de l'entalla
-# D_d : Relació D/d; r_d : Relació r/D
+# D_d : Relació D/d; r_d : Relació r/d
 # i_flag : =1 -> K_t per tensió normal,  !=1 -> K_t per von Mises
     if i_flag == 1:
         K_t = ( 0.632 + 0.377 * D_d**(-4.4) + r_d**(-0.5)
