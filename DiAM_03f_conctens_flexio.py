@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-DiAM - Exercici 04: Semieix tubular a flexió amb forat transversal i canvi
+DiAM - Exercici 03f: Semieix tubular a flexió amb forat transversal i canvi
 de secció.
 
 Càlcul analític de:
@@ -24,14 +24,14 @@ D = 50.0            # [mm]  diàmetre exterior del tram gran (on hi ha el forat)
 d = 40.0            # [mm]  diàmetre exterior del tram petit
 d_i = 20.0          # [mm]  diàmetre del forat axial (interior)
 a = 10.0            # [mm]  diàmetre del forat transversal
-r = 3.0             # [mm]  radi d'acord del canvi de diàmetre
+r = 1.0             # [mm]  radi d'acord del canvi de diàmetre
 
 x_forat = 30.0      # [mm]  posició del forat (des de la cara de la placa)
 x_canvi = 60.0      # [mm]  posició del canvi de diàmetre
 
 S_ut = 1800.0       # [MPa] resistència a tracció del 100Cr6 templat
 
-Kt_canvi_grafica = 1.78   # K_t llegit a la gràfica A-15-9 de Shigley (per comparar)
+Kt_canvi_grafica = 2.48   # K_t llegit a la gràfica A-15-9 de Shigley (per comparar)
 
 
 # =============================================================================
