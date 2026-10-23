@@ -1,0 +1,79 @@
+/post1
+set,first
+allsel
+*get,nsets,active,0,set,nset
+
+! ---- Coordenades dels punts (unitats del solver) ----
+npt = 5
+*dim,px,array,npt
+*dim,py,array,npt
+*dim,pz,array,npt
+px(1) = 0,   0, 0,   0,   0
+py(1) = 11, 11, 0, -11, -11
+pz(1) = 0,   5, 5,   5,   0
+
+! ---- Resum: node trobat per a cada punt ----
+*dim,resum,array,npt,8
+*do,jj,1,npt
+  nd_act = node(px(jj),py(jj),pz(jj))
+  *get,xn,node,nd_act,loc,x
+  *get,yn,node,nd_act,loc,y
+  *get,zn,node,nd_act,loc,z
+  resum(jj,1) = jj
+  resum(jj,2) = nd_act
+  resum(jj,3) = px(jj)
+  resum(jj,4) = py(jj)
+  resum(jj,5) = pz(jj)
+  resum(jj,6) = xn
+  resum(jj,7) = yn
+  resum(jj,8) = zn
+*enddo
+
+*cfopen,resum_nodes,txt
+*vwrite
+('Punt Node Xdemanat Ydemanat Zdemanat Xnode Ynode Znode')
+*vwrite,resum(1,1),resum(1,2),resum(1,3),resum(1,4),resum(1,5),resum(1,6),resum(1,7),resum(1,8)
+(F5.0,1X,F10.0,1X,6(G14.6,1X))
+*cfclos
+
+! ---- Taula: una fila per node i instant ----
+nfil = npt*nsets
+*dim,taula,array,nfil,17
+
+fila = 0
+*do,jj,1,npt
+  set,first
+  nd_act = node(px(jj),py(jj),pz(jj))
+  *get,xn,node,nd_act,loc,x
+  *get,yn,node,nd_act,loc,y
+  *get,zn,node,nd_act,loc,z
+
+  *do,ii,1,nsets
+    set,,,,,,,ii
+    fila = fila + 1
+    taula(fila,1) = jj
+    taula(fila,2) = nd_act
+    taula(fila,3) = xn
+    taula(fila,4) = yn
+    taula(fila,5) = zn
+    taula(fila,6) = ii
+    *get,taula(fila,7),active,0,set,time
+    *get,taula(fila,8),node,nd_act,s,x
+    *get,taula(fila,9),node,nd_act,s,y
+    *get,taula(fila,10),node,nd_act,s,z
+    *get,taula(fila,11),node,nd_act,s,xy
+    *get,taula(fila,12),node,nd_act,s,yz
+    *get,taula(fila,13),node,nd_act,s,xz
+    *get,taula(fila,14),node,nd_act,s,1
+    *get,taula(fila,15),node,nd_act,s,2
+    *get,taula(fila,16),node,nd_act,s,3
+    *get,taula(fila,17),node,nd_act,s,eqv
+  *enddo
+*enddo
+
+*cfopen,tensions_nodes,csv
+*vwrite
+('Punt,Node,X,Y,Z,Set,Temps,SX,SY,SZ,SXY,SYZ,SXZ,S1,S2,S3,SEQV')
+*vwrite,taula(1,1),taula(1,2),taula(1,3),taula(1,4),taula(1,5),taula(1,6),taula(1,7),taula(1,8),taula(1,9),taula(1,10),taula(1,11),taula(1,12),taula(1,13),taula(1,14),taula(1,15),taula(1,16),taula(1,17)
+(F4.0,',',F10.0,',',3(E15.7,','),F6.0,11(',',E15.7))
+*cfclos
